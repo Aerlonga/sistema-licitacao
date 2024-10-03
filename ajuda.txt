@@ -1,0 +1,5 @@
+docker compose exec app php artisan migrate
+
+docker compose exec app php artisan "nome da tabela":table
+
+php artisan serve --host=0.0.0.0 --port=8000
