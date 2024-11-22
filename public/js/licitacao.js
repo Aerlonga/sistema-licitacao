@@ -101,47 +101,73 @@ function toggleEditMode() {
 function salvarEdicao() {
     const licitacaoId = $('#visualizarLicitacaoModal').data('licitacaoId');
 
+    // Captura os valores dos campos
     const data = {
-        // Para campos não editáveis, vamos buscar o texto diretamente do `span`
-        modalidade: $('#modalidadeText span').text(),
-        objeto_contratacao: $('#objetoText span').text(),
-        gestor: $('#gestorText span').text(),
-        integrante: $('#integranteText span').text(),
-        fiscal: $('#fiscalText span').text(),
-        data_inclusao: $('#dataInclusaoText span').text(),
-        sei: $('#seiText span').text(),
-        sislog: $('#sislogText span').text(),
-
-        // Para campos `select`, obtenha o valor selecionado
-        situacao: $('#situacaoText select').val(),
-        local: $('#localText select').val(),
-
-        // Para o campo de observação, obtenha o valor do input
-        observacao: $('#observacaoText input').val()
+        modalidade: $('#modalidadeText input').val() || null,
+        objeto_contratacao: $('#objetoText input').length
+            ? $('#objetoText input').val().trim()
+            : $('#objetoText span').text().trim(),
+        gestor: $('#gestorText input').val() || null,
+        integrante: $('#integranteText input').val() || null,
+        fiscal: $('#fiscalText input').val() || null,
+        data_inclusao: $('#dataInclusaoText span').text().trim() || null, // Somente leitura
+        sei: $('#seiText input').val() || null,
+        sislog: $('#sislogText input').val() || null,
+        situacao: $('#situacaoText select').val() || null,
+        local: $('#localText select').val() || null,
+        observacao: $('#observacaoText input').val() || null,
     };
+
+    // Valida os campos obrigatórios no frontend (opcional)
+    if (!data.objeto_contratacao) {
+        Swal.fire({
+            title: 'Erro',
+            text: 'O campo "Objeto da Contratação" é obrigatório.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
 
     // Desativa o botão de salvar para evitar múltiplos cliques
     $('#salvarButton').prop('disabled', true);
 
+    // Envia a requisição AJAX
     $.ajax({
         url: `/licitacoes/${licitacaoId}`,
         method: 'PUT',
         data: data,
         success: function (response) {
-            alert('Alterações salvas com sucesso!');
-            $('#visualizarLicitacaoModal').modal('hide');
-            inicializarTabelaLicitacoes(); // Recarrega a tabela após salvar
+            // Exibe mensagem de sucesso
+            Swal.fire({
+                title: 'Alterações Salvas!',
+                text: 'As alterações foram salvas com sucesso.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                $('#visualizarLicitacaoModal').modal('hide');
+                inicializarTabelaLicitacoes(); // Recarrega a tabela
+            });
         },
         error: function (xhr) {
             console.error('Erro ao salvar alterações:', xhr.responseText);
-            alert('Erro ao salvar alterações.');
+
+            // Exibe mensagem de erro
+            Swal.fire({
+                title: 'Erro',
+                text: 'Houve um erro ao salvar as alterações. Verifique os campos obrigatórios.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         },
         complete: function () {
-            // Reativa o botão de salvar após a conclusão da requisição, com sucesso ou erro
+            // Reativa o botão de salvar após a conclusão da requisição
             $('#salvarButton').prop('disabled', false);
         }
     });
 }
+
+
 
 
 // Função para cancelar a edição
@@ -197,23 +223,55 @@ function abrirModalEditar(id) {
     $.ajax({
         url: `/licitacoes/${id}/show`,
         method: 'GET',
-        success: function (data) {
-            // Exemplo de variável isAdmin que você pode definir globalmente ou passar do backend
-            var isAdmin = typeof window.isAdmin !== 'undefined' ? window.isAdmin : false;
+        success: function (response) {
+            const data = response.data;
+            const isAdmin = response.isAdmin;
 
-            // Renderizar campos com base no tipo de usuário
-            $('#modalidadeText').html(isAdmin ? `<input type="text" class="form-control" value="${data.modalidade}">` : `<span>${data.modalidade}</span>`);
-            $('#objetoText').html(isAdmin ? `<input type="text" class="form-control" value="${data.objeto_contratacao}">` : `<span>${data.objeto_contratacao}</span>`);
-            $('#gestorText').html(isAdmin ? `<input type="text" class="form-control" value="${data.gestor ? data.gestor.nome : 'N/A'}">` : `<span>${data.gestor ? data.gestor.nome : 'N/A'}</span>`);
-            $('#integranteText').html(isAdmin ? `<input type="text" class="form-control" value="${data.integrante ? data.integrante.nome : 'N/A'}">` : `<span>${data.integrante ? data.integrante.nome : 'N/A'}</span>`);
-            $('#fiscalText').html(isAdmin ? `<input type="text" class="form-control" value="${data.fiscal ? data.fiscal.nome : 'N/A'}">` : `<span>${data.fiscal ? data.fiscal.nome : 'N/A'}</span>`);
-            $('#dataInclusaoText').html(`<span>${data.created_at ? moment(data.created_at).format('DD/MM/YYYY HH:mm:ss') : ''}</span>`);
-            $('#seiText').html(isAdmin ? `<input type="text" class="form-control" value="${data.sei}">` : `<span>${data.sei}</span>`);
-            $('#sislogText').html(isAdmin ? `<input type="text" class="form-control" value="${data.sislog}">` : `<span>${data.sislog}</span>`);
+            // Renderiza os campos com base no tipo de usuário
+            $('#modalidadeText').html(isAdmin
+                ? `<input type="text" class="form-control" value="${data.modalidade}">`
+                : `<span>${data.modalidade || 'N/A'}</span>`);
 
-            // Campos editáveis para todos os usuários (incluindo não administradores)
-            $('#situacaoText').html(`
-                <select class="form-control" ${isAdmin ? '' : ''}>
+            $('#objetoText').html(isAdmin
+                ? `<input type="text" class="form-control" value="${data.objeto_contratacao || ''}">`
+                : `<span>${data.objeto_contratacao || ''}</span>`);
+
+            $('#gestorText').html(isAdmin
+                ? `<select class="form-control">
+                    <option value="Vitor" ${data.gestor === 'Vitor' ? 'selected' : ''}>Vitor</option>
+                    <option value="Thaynara" ${data.gestor === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+                    <option value="Francielle" ${data.gestor === 'Francielle' ? 'selected' : ''}>Francielle</option>
+                   </select>`
+                : `<span>${data.gestor || 'N/A'}</span>`);
+
+            $('#integranteText').html(isAdmin
+                ? `<select class="form-control">
+                    <option value="Vitor" ${data.integrante === 'Vitor' ? 'selected' : ''}>Vitor</option>
+                    <option value="Thaynara" ${data.integrante === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+                    <option value="Francielle" ${data.integrante === 'Francielle' ? 'selected' : ''}>Francielle</option>
+                   </select>`
+                : `<span>${data.integrante || 'N/A'}</span>`);
+
+            $('#fiscalText').html(isAdmin
+                ? `<select class="form-control">
+                    <option value="Vitor" ${data.fiscal === 'Vitor' ? 'selected' : ''}>Vitor</option>
+                    <option value="Thaynara" ${data.fiscal === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+                    <option value="Francielle" ${data.fiscal === 'Francielle' ? 'selected' : ''}>Francielle</option>
+                   </select>`
+                : `<span>${data.fiscal || 'N/A'}</span>`);
+
+            $('#dataInclusaoText').html(`<span>${data.data_inclusao || 'N/A'}</span>`);
+            $('#seiText').html(isAdmin
+                ? `<input type="text" class="form-control" value="${data.sei}">`
+                : `<span>${data.sei || 'N/A'}</span>`);
+
+            $('#sislogText').html(isAdmin
+                ? `<input type="text" class="form-control" value="${data.sislog}">`
+                : `<span>${data.sislog || 'N/A'}</span>`);
+
+            // Campos editáveis para todos os usuários
+            $('#situacaoText').html(` 
+                <select class="form-control">
                     <option value="Em andamento" ${data.situacao === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
                     <option value="Em outro setor" ${data.situacao === 'Em outro setor' ? 'selected' : ''}>Em outro setor</option>
                     <option value="Finalizado" ${data.situacao === 'Finalizado' ? 'selected' : ''}>Finalizado</option>
@@ -221,7 +279,7 @@ function abrirModalEditar(id) {
             `);
 
             $('#localText').html(`
-                <select class="form-control" ${isAdmin ? '' : ''}>
+                <select class="form-control">
                     <option value="TR e/ou ETP" ${data.local === 'TR e/ou ETP' ? 'selected' : ''}>TR e/ou ETP</option>
                     <option value="GELIC e GEORC" ${data.local === 'GELIC e GEORC' ? 'selected' : ''}>GELIC e GEORC</option>
                     <option value="GELIC" ${data.local === 'GELIC' ? 'selected' : ''}>GELIC</option>
@@ -232,15 +290,15 @@ function abrirModalEditar(id) {
                 </select>
             `);
 
-            $('#observacaoText').html(`<input type="text" class="form-control" value="${data.observacao ? data.observacao : ''}">`);
+            $('#observacaoText').html(`<input type="text" class="form-control" value="${data.observacao || ''}">`);
 
+            // Exibe o modal
             $('#visualizarLicitacaoModal').modal('show');
             $('#visualizarLicitacaoModal').data('licitacaoId', id);
-            $('#salvarButton').show();
         },
         error: function (xhr) {
             console.error('Erro ao carregar os detalhes da licitação:', xhr.responseText);
-            alert('Erro ao carregar os detalhes da licitação.');
+            Swal.fire('Erro', 'Não foi possível carregar os detalhes da licitação.', 'error');
         }
     });
 }

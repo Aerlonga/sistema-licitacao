@@ -70,11 +70,45 @@ class LicitacaoController extends Controller
     {
         try {
             $licitacao = Licitacao::with(['gestor', 'integrante', 'fiscal'])->findOrFail($id);
-            return response()->json($licitacao);
-        } catch (\Exception $e) {
+
+            /** @var \App\Models\User|null $user */
+            $user = Auth::user();
+            $isAdmin = $user && method_exists($user, 'isAdmin') && $user->isAdmin();
+
+            $response = [
+                'modalidade' => $licitacao->modalidade ?? '',
+                'objeto_contratacao' => $licitacao->objeto_contratacao ?? '',
+                'gestor' => $licitacao->gestor ? $licitacao->gestor->nome : '',
+                'integrante' => $licitacao->integrante ? $licitacao->integrante->nome : '',
+                'fiscal' => $licitacao->fiscal ? $licitacao->fiscal->nome : '',
+                'data_inclusao' => $licitacao->created_at ? $licitacao->created_at->format('d/m/Y H:i:s') : '',
+                'sei' => $licitacao->sei ?? '',
+                'sislog' => $licitacao->sislog ?? '',
+                'situacao' => $licitacao->situacao ?? '',
+                'local' => $licitacao->local ?? '',
+                'observacao' => $licitacao->observacao ?? '',
+                'opcoes_gestor' => ['Vitor', 'Thaynara', 'Francielle'],
+                'opcoes_integrante' => ['Vitor', 'Thaynara', 'Francielle'],
+                'opcoes_fiscal' => ['Vitor', 'Thaynara', 'Francielle'],
+            ];
+
+            return response()->json([
+                'data' => $response,
+                'isAdmin' => $isAdmin
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Licitação não encontrada.'], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao buscar detalhes da licitação.',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ], 500);
         }
     }
+
+
 
     public function destroy($id)
     {
@@ -117,10 +151,12 @@ class LicitacaoController extends Controller
             }
 
             $validatedData = $request->validate([
+                'objeto_contratacao' => 'required|string',
                 'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
                 'local' => 'required|string|in:TR e/ou ETP,GELIC e GEORC,GELIC,GEORC,PROSET,PR,CACTIC',
                 'observacao' => 'nullable|string'
             ]);
+
 
             /** @var \App\Models\User|null $user */
             $user = Auth::user(); // Adicionando a anotação de tipo
@@ -135,7 +171,7 @@ class LicitacaoController extends Controller
                 $licitacao->sislog = $request->input('sislog', $licitacao->sislog);
                 $licitacao->situacao = $validatedData['situacao'];
                 $licitacao->local = $validatedData['local'];
-                $licitacao->observacao = $validatedData['observacao'];            
+                $licitacao->observacao = $validatedData['observacao'];
             } else {
                 $licitacao->situacao = $validatedData['situacao'];
                 $licitacao->local = $validatedData['local'];

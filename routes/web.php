@@ -7,6 +7,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgotPasswordController;
 
 
+
 // Rotas de autenticação (acessíveis a usuários não autenticados)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -25,6 +26,8 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'reset'])->name
 // Rotas protegidas pelo middleware 'auth'
 Route::middleware(['auth'])->group(function () {
     // Todas as rotas definidas dentro deste grupo só podem ser acessadas por usuários autenticados.
+
+    Route::get('/licitacoes/{id}/show', [LicitacaoController::class, 'show'])->name('licitacoes.show');
 
     Route::get('/inicio', [LicitacaoController::class, 'inicio'])->name('inicio');
     Route::get('/licitacoes', [LicitacaoController::class, 'visualizarLicitacoes'])->name('visualizarLicitacoes');
