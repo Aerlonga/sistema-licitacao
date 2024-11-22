@@ -27,6 +27,8 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'reset'])->name
 Route::middleware(['auth'])->group(function () {
     // Todas as rotas definidas dentro deste grupo só podem ser acessadas por usuários autenticados.
 
+    Route::get('/checklist', [LicitacaoController::class, 'checklist'])->name('checklist');
+
     Route::get('/licitacoes/{id}/show', [LicitacaoController::class, 'show'])->name('licitacoes.show');
 
     Route::get('/inicio', [LicitacaoController::class, 'inicio'])->name('inicio');

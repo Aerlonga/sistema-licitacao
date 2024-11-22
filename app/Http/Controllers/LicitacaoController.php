@@ -43,6 +43,11 @@ class LicitacaoController extends Controller
         return response()->json($licitacoes);
     }
 
+    public function checklist()
+    {
+        return view('checklist');
+    }
+
     public function gerarEquipe(CadastroLicitacaoRequest $request)
     {
         $request->validate([
