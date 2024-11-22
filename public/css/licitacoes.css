@@ -1,0 +1,34 @@
+/* 
+#licitacoesTable thead th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#licitacoesTable tbody td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+.card-body.table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+#licitacoesTable_wrapper {
+    width: 100%;
+}
+
+#licitacoesTable {
+    width: 100%;
+    table-layout: auto; 
+}
+
+.dataTables_scrollHeadInner,
+.dataTables_scrollFootInner {
+    width: 100% !important;
+}
+
+.table {
+    white-space: normal; 
+} */

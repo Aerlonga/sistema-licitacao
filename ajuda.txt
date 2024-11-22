@@ -1,5 +1,15 @@
-docker compose exec app php artisan migrate
+1 - passo copiar env.example
 
-docker compose exec app php artisan "nome da tabela":table
+2 - composer install
 
-php artisan serve --host=0.0.0.0 --port=8000
+3 - docker compose up -d --build
+
+4 - docker compose exec app bash
+
+5 - php artisan key:generate
+
+6 - php artisan migrate
+
+7 - php artisan db:seed
+
+8 - php artisan serve --host=0.0.0.0 --port=8001
