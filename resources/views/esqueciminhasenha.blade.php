@@ -5,27 +5,27 @@
         <div class="register-logo">
             <b>Redefinição de Senha</b>
         </div>
-        <div class="card">
-            <div class="card-body register-card-body">
-                <p class="login-box-msg">Informe seu email para reset de senha</p>
-                <form id="resetForm" action="{{ route('password.email') }}" method="POST">
-                    @csrf
-                    <div class="input-group mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Email" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+            <div class="card">
+                <div class="card-body register-card-body">
+                    <p class="login-box-msg">Informe seu email para criar uma nova senha</p>
+                    <form id="resetForm" action="{{ route('password.email') }}" method="POST">
+                        @csrf
+                        <div class="input-group mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 d-flex justify-content-center mt-2">
-                            <button id="submitButton" type="submit" class="btn btn-primary">Confirmar</button>
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-center mt-2">
+                                <button id="submitButton" type="submit" class="btn btn-primary">Confirmar</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
     </div>
 </div>
 

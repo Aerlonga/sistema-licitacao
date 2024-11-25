@@ -1,0 +1,22 @@
+.position-relative {
+    position: relative;
+}
+
+.toggle-password-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.toggle-password-btn i {
+    font-size: 1.2rem;
+    /* Tamanho do ícone */
+    color: #6c757d;
+    /* Cor do ícone */
+}

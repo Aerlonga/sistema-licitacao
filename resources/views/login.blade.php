@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required>
                     </div>
                     <div class="col-md-12">
                         <label for="password">Senha</label>
