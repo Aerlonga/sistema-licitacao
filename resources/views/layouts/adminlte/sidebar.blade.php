@@ -24,7 +24,7 @@
                 <li class="nav-item">
                     <a href="{{ route('visualizarLicitacoes') }}" class="nav-link">
                         <i class="nav-icon fas fa-briefcase"></i>
-                        <p>Licitações</p>
+                        <p>Contratações</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -47,16 +47,3 @@
         </nav>
     </div>
 </aside>
-
-<!-- Adicione o script do Google Translate Widget -->
-{{-- <script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'pt',
-            includedLanguages: 'en,es,fr,de,pt', // Modifique os idiomas conforme necessário
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script> --}}

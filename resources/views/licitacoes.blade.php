@@ -12,7 +12,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="mb-4 mt-2">Lista de Licitações</h2>
+                <h2 class="mb-4 mt-2">Lista de Contratações</h2>
                 <div class="card card-default">
                     <div class="card-body table-responsive">
                         <form id="licitacoesForm" action="{{ route('listarDatatable') }}" method="POST">
