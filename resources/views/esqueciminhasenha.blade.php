@@ -1,5 +1,9 @@
 @extends('layouts.adminlte.styles')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/esqueciminhasenha.css') }}">
+@endsection
+
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="register-box">
         <div class="register-logo">

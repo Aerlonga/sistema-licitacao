@@ -7,6 +7,9 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgotPasswordController;
 
 
+Route::get('/', function () {
+    return redirect('/login');
+});
 
 // Rotas de autenticação (acessíveis a usuários não autenticados)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

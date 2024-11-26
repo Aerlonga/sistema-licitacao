@@ -146,35 +146,3 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
-
-
-{{-- document.addEventListener('DOMContentLoaded', function() {
-        const submitButton = document.querySelector('#submitButton');
-
-        document.getElementById('newPass').addEventListener('submit', function() {
-            const submitButton = document.getElementById('submitButton');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Enviando...';
-        });
-
-
-        @if (session('status'))
-            Swal.fire({
-                title: 'Sucesso!',
-                text: "{{ session('status') }}",
-                icon: 'success',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#3085d6',
-            });
-        @endif
-
-        @if ($errors->any())
-            Swal.fire({
-                title: 'Erro!',
-                text: '{{ $errors->first() }}',
-                icon: 'error',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#d33',
-            });
-        @endif
-    }); --}}
