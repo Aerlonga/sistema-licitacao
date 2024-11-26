@@ -177,17 +177,8 @@ function cancelarEdicao() {
 }
 
 function excluirLicitacao(id) {
-    Swal.fire({
-        title: 'Tem certeza que deseja excluir esta licitação?',
-        text: 'Essa ação não poderá ser desfeita.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim, excluir!',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
+    SweetAlertGoInfra.confirmar("Tem certeza que deseja excluir esta licitação", function (isConfirmed) {
+        if (isConfirmed) {
             $.ajax({
                 url: `/licitacoes/${id}`, // URL para o endpoint de atualização
                 type: 'PUT', // Método PUT para atualização
@@ -200,8 +191,8 @@ function excluirLicitacao(id) {
                 success: function (response) {
                     // Usar SweetAlert para mensagem de sucesso
                     Swal.fire({
-                        title: 'Excluído!',
-                        text: 'Licitação excluída com sucesso.',
+                        title: 'Licitação excluída com sucesso!',
+                        text: '',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
@@ -213,17 +204,18 @@ function excluirLicitacao(id) {
                     console.error('Erro ao excluir a licitação:', xhr.responseText);
                     // Usar SweetAlert para mensagens de erro
                     Swal.fire({
-                        title: 'Erro!',
+                        title: 'Erro',
                         text: 'Houve um erro ao tentar excluir a licitação.',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                 }
             });
+        } else {
+            SweetAlertGoInfra.alerta('Exclusão cancelada.');
         }
     });
 }
-
 
 
 // Função para abrir o modal de edição com os detalhes da licitação
@@ -246,25 +238,25 @@ function abrirModalEditar(id) {
 
             $('#gestorText').html(isAdmin
                 ? `<select class="form-control">
-                    <option value="João" ${data.gestor === 'Joao' ? 'selected' : ''}>João</option>
-                    <option value="Maria" ${data.gestor === 'Maria' ? 'selected' : ''}>Maria</option>
-                    <option value="Pedro" ${data.gestor === 'Pedro' ? 'selected' : ''}>Pedro</option>
+                    <option value="Vitor" ${data.gestor === 'Vitor' ? 'selected' : ''}>Vitor</option>
+                    <option value="Thaynara" ${data.gestor === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+                    <option value="Francielle" ${data.gestor === 'Francielle' ? 'selected' : ''}>Francielle</option>
                    </select>`
                 : `<span>${data.gestor || 'N/A'}</span>`);
 
             $('#integranteText').html(isAdmin
                 ? `<select class="form-control">
-                    <option value="João" ${data.integrante === 'Joao' ? 'selected' : ''}>João</option>
-                    <option value="Maria" ${data.integrante === 'Maria' ? 'selected' : ''}>Maria</option>
-                    <option value="Pedro" ${data.integrante === 'Pedro' ? 'selected' : ''}>Pedro</option>
+                    <option value="Vitor" ${data.integrante === 'Vitor' ? 'selected' : ''}>Vitor</option>
+                    <option value="Thaynara" ${data.integrante === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+                    <option value="Francielle" ${data.integrante === 'Francielle' ? 'selected' : ''}>Francielle</option>
                    </select>`
                 : `<span>${data.integrante || 'N/A'}</span>`);
 
             $('#fiscalText').html(isAdmin
                 ? `<select class="form-control">
-                    <option value="João" ${data.fiscal === 'Joao' ? 'selected' : ''}>João</option>
-                    <option value="Maria" ${data.fiscal === 'Maria' ? 'selected' : ''}>Maria</option>
-                    <option value="Pedro" ${data.fiscal === 'Pedro' ? 'selected' : ''}>Pedro</option>
+                    <option value="Vitor" ${data.fiscal === 'Vitor' ? 'selected' : ''}>Vitor</option>
+                    <option value="Thaynara" ${data.fiscal === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+                    <option value="Francielle" ${data.fiscal === 'Francielle' ? 'selected' : ''}>Francielle</option>
                    </select>`
                 : `<span>${data.fiscal || 'N/A'}</span>`);
 
