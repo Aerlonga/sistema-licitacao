@@ -238,25 +238,25 @@ function abrirModalEditar(id) {
 
             $('#gestorText').html(isAdmin
                 ? `<select class="form-control">
-                    <option value="Vitor" ${data.gestor === 'Vitor' ? 'selected' : ''}>Vitor</option>
-                    <option value="Thaynara" ${data.gestor === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
-                    <option value="Francielle" ${data.gestor === 'Francielle' ? 'selected' : ''}>Francielle</option>
+                    <option value="Joao" ${data.gestor === 'Joao' ? 'selected' : ''}>João</option>
+                    <option value="Maria" ${data.gestor === 'Maria' ? 'selected' : ''}>Maria</option>
+                    <option value="Pedro" ${data.gestor === 'Pedro' ? 'selected' : ''}>Pedro</option>
                    </select>`
                 : `<span>${data.gestor || 'N/A'}</span>`);
 
             $('#integranteText').html(isAdmin
                 ? `<select class="form-control">
-                    <option value="Vitor" ${data.integrante === 'Vitor' ? 'selected' : ''}>Vitor</option>
-                    <option value="Thaynara" ${data.integrante === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
-                    <option value="Francielle" ${data.integrante === 'Francielle' ? 'selected' : ''}>Francielle</option>
+                    <option value="Joao" ${data.integrante === 'Joao' ? 'selected' : ''}>João</option>
+                    <option value="Maria" ${data.integrante === 'Maria' ? 'selected' : ''}>Maria</option>
+                    <option value="Pedro" ${data.integrante === 'Pedro' ? 'selected' : ''}>Pedro</option>
                    </select>`
                 : `<span>${data.integrante || 'N/A'}</span>`);
 
             $('#fiscalText').html(isAdmin
                 ? `<select class="form-control">
-                    <option value="Vitor" ${data.fiscal === 'Vitor' ? 'selected' : ''}>Vitor</option>
-                    <option value="Thaynara" ${data.fiscal === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
-                    <option value="Francielle" ${data.fiscal === 'Francielle' ? 'selected' : ''}>Francielle</option>
+                    <option value="Joao" ${data.fiscal === 'Joao' ? 'selected' : ''}>João</option>
+                    <option value="Maria" ${data.fiscal === 'Maria' ? 'selected' : ''}>Maria</option>
+                    <option value="Pedro" ${data.fiscal === 'Pedro' ? 'selected' : ''}>Pedro</option>
                    </select>`
                 : `<span>${data.fiscal || 'N/A'}</span>`);
 

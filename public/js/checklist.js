@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'Requisição de Despesas',
             'Certidões Negativas da Empresa',
             'CACTIC',
-            'PROSET',
+            'Setor Jurídico',
             'Autorização da Presidência',
-            'GEORC - Documentação Orçamentária',
-            'GELIC - Minuta do contrato',
+            'Documentação Orçamentária',
+            'Minuta do contrato',
         ],
         dispensa: [
             'DOD',
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
             'Orçamento Estimado',
             'Evidências do Orçamento Estimado - Incisos',
             'CACTIC',
-            'GEORC',
-            'GELIC',
+            'Documentação Orçamentária',
+            'Setor de Licitações',
         ],
         inexigibilidade: [
             'DOD',
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
             'Evidências do Orçamento Estimado - Incisos',
             'Certificado de Exclusividade',
             'CACTIC',
-            'GEORC',
-            'GELIC',
+            'Documentação Orçamentária',
+            'Setor de Licitações',
         ],
         pregao: [
             'DOD',
@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
             'Orçamento Estimado',
             'Evidências do Orçamento Estimado - Incisos',
             'CACTIC',
-            'GEORC',
-            'GELIC',
+            'Documentação Orçamentária',
+            'Setor de Licitações',
         ],
         pagamento: [
             'Autorização de Fornecimento',
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Extrato de Título',
             'Checklist',
             'Autorização de Pagamento - DIRETORIA',
-            'Despacho Pagamento - GEFIN',
+            'Despacho Pagamento',
         ],
         participe: [
             'Oficio Circular - Convite de Participação',
@@ -86,13 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
             'Analise/Matriz de Risco',
             'Portaria do Gestor do Contrato',
             'Justificativa',
-            'Despacho CACTIC',
             'Parecer Técnico',
-            'Despacho Proset',
             'Parecer Jurídico',
             'Autorização Presidente',
-            'GEORC',
-            'GELIC/GEI'
+            'Documentação Orçamentária',
+            'Setor de Licitações',
         ],
         renovacao: [
             'Portaria',
@@ -103,9 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
             'Incisos',
             'Certidões Negativas',
             'Instrução Normativa - CACTIC',
-            'Parecer CACTIC',
-            'GEORC',
-            'GELIC',
+            'Parecer Técnico',
+            'Documentação Orçamentária',
+            'Setor de Licitações',
         ]
     };
 
