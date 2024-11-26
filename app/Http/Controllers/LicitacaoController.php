@@ -92,9 +92,9 @@ class LicitacaoController extends Controller
                 'situacao' => $licitacao->situacao ?? '',
                 'local' => $licitacao->local ?? '',
                 'observacao' => $licitacao->observacao ?? '',
-                'opcoes_gestor' => ['Vitor', 'Thaynara', 'Francielle'],
-                'opcoes_integrante' => ['Vitor', 'Thaynara', 'Francielle'],
-                'opcoes_fiscal' => ['Vitor', 'Thaynara', 'Francielle'],
+                'opcoes_gestor' => ['João', 'Maria', 'Pedro'],
+                'opcoes_integrante' => ['João', 'Maria', 'Pedro'],
+                'opcoes_fiscal' => ['João', 'Maria', 'Pedro'],
             ];
 
             return response()->json([
