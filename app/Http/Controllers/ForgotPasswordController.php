@@ -32,26 +32,27 @@ class ForgotPasswordController extends Controller
         return view('trocarsenha', ['token' => $token]);
     }
 
-
     public function reset(Request $request)
     {
         $request->validate([
+            'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-            'token' => 'required'
+            'password' => 'required|confirmed|min:8',
         ]);
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => bcrypt($password),
                 ])->save();
             }
         );
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
-            : back()->withErrors(['email' => __($status)]);
+        if ($status == Password::PASSWORD_RESET) {
+            return response()->json(['success' => true, 'message' => 'Senha redefinida com sucesso!']);
+        }
+
+        return response()->json(['success' => false, 'message' => __($status)], 400);
     }
 }

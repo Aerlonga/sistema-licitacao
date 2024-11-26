@@ -1,7 +1,7 @@
 @extends('layouts.adminlte.styles')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/trocarsenha.css') }}">
 @endsection
 
 <div class="d-flex justify-content-center align-items-center vh-100">
@@ -26,37 +26,39 @@
 
                     <div class="input-group mb-4">
                         <input type="email" name="email" value="{{ old('email') }}" class="form-control"
-                            placeholder="Email" required autofocus>
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
+                            placeholder="Digite seu email" required autofocus>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="input-group mb-4 position-relative">
-                        <input type="password" name="password" id="password" class="form-control"
-                            placeholder="Nova Senha" required>
-                        <button type="button" id="togglePassword" class="toggle-password-btn position-absolute">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-
-                    <div class="input-group mb-4 position-relative">
-                        <input type="password" name="password_confirmation" id="password_confirmation"
-                            class="form-control" placeholder="Confirme a Senha" required>
-                        <button type="button" id="togglePasswordConfirm" class="toggle-password-btn position-absolute">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-12 d-flex justify-content-center mt-2">
-                            <button id="submitButton" type="submit" class="btn btn-primary">
-                                Redefinir Senha
-                            </button>
+                    <div class="mb-4">
+                        <div class="password-container">
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="Digite sua nova senha" required>
+                            <span id="togglePassword" class="toggle-password-btn">
+                                <i class="fas fa-eye"></i>
+                            </span>
                         </div>
                     </div>
 
+                    <div class="mb-4">
+                        <div class="password-container">
+                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                class="form-control" placeholder="Confirme sua nova senha" required>
+                            <span id="togglePasswordConfirm" class="toggle-password-btn">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-2">
+                        <button id="submitButton" type="submit" class="btn btn-primary w-100">
+                            Redefinir Senha
+                        </button>
+                    </div>
                 </form>
 
             </div>
@@ -64,11 +66,20 @@
     </div>
 </div>
 
+
 <script>
-    // Função para alternar visibilidade de senha
-    function togglePasswordVisibility(inputId, button) {
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        togglePasswordVisibility('password', this);
+    });
+
+    document.getElementById('togglePasswordConfirm').addEventListener('click', function() {
+        togglePasswordVisibility('password_confirmation', this);
+    });
+
+
+    function togglePasswordVisibility(inputId, toggleButton) {
         const passwordField = document.getElementById(inputId);
-        const icon = button.querySelector('i');
+        const icon = toggleButton.querySelector('i');
         if (passwordField.type === 'password') {
             passwordField.type = 'text';
             icon.classList.remove('fa-eye');
@@ -80,25 +91,73 @@
         }
     }
 
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        togglePasswordVisibility('password', this);
-    });
-
-    document.getElementById('togglePasswordConfirm').addEventListener('click', function() {
-        togglePasswordVisibility('password_confirmation', this);
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('newPass');
+        const submitButton = document.getElementById('submitButton');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o redirecionamento padrão do formulário
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+
+            const formData = new FormData(form); // Captura os dados do formulário
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    },
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Sucesso!',
+                            text: 'Sua senha foi redefinida com sucesso.',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then(() => {
+                            window.location.href =
+                            '/login'; // Redireciona para a página de login
+                        });
+                    } else {
+                        throw new Error(data.message || 'Erro ao redefinir senha.');
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        title: 'Erro!',
+                        text: error.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Redefinir Senha';
+                });
+        });
+    });
+</script>
+
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endsection
+
+
+{{-- document.addEventListener('DOMContentLoaded', function() {
         const submitButton = document.querySelector('#submitButton');
 
-        // Desativa o botão enquanto o formulário está sendo enviado
-        const form = document.querySelector('#newPass');
-        form.addEventListener('submit', function() {
+        document.getElementById('newPass').addEventListener('submit', function() {
+            const submitButton = document.getElementById('submitButton');
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
         });
 
-        // Exibe mensagens do Laravel com SweetAlert
+
         @if (session('status'))
             Swal.fire({
                 title: 'Sucesso!',
@@ -118,9 +177,4 @@
                 confirmButtonColor: '#d33',
             });
         @endif
-    });
-</script>
-
-@section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@endsection
+    }); --}}
