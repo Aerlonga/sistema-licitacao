@@ -52,7 +52,6 @@
     <script src="{{ asset('vendor/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables/plugins/i18n/pt-BR.json') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables/plugins/sortDatePtBr.js') }}"></script>
-    <script src="{{ asset('vendor/goinfra/sweet-alert.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>

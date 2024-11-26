@@ -24,8 +24,6 @@
 
         <!-- Exibir apenas se o usuário estiver autenticado -->
         @auth
-            {{-- <button onclick="switchToEnglish()">English</button>
-            <button onclick="switchToPortuguese()">Português</button> --}}
             <li class="nav-item">
                 <span class="nav-link">Bem-vindo, {{ Auth::user()->name }}</span>
             </li>
