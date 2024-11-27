@@ -142,7 +142,7 @@ class LicitacaoController extends Controller
 
     public function update(Request $request, $id)
     {
-        Log::info($request->all());
+        Log::info('Dados recebidos no update:', $request->all());
         try {
             $licitacao = Licitacao::findOrFail($id);
 
@@ -158,139 +158,87 @@ class LicitacaoController extends Controller
                 }
             }
 
-            //     $validatedData = $request->validate([
-            //         'objeto_contratacao' => 'required|string',
-            //         'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
-            //         'local' => 'required|string|in:TR e/ou ETP,GELIC e GEORC,GELIC,GEORC,PROSET,PR,CACTIC',
-            //         'observacao' => 'nullable|string'
-            //     ]);
-
-            //     /** @var \App\Models\User|null $user */
-            //     $user = Auth::user(); // Adicionando a anotação de tipo
-
-            //     if (Auth::check() && $user && $user->isAdmin()) {
-            //         $licitacao->modalidade = $request->input('modalidade', $licitacao->modalidade);
-            //         $licitacao->objeto_contratacao = $request->input('objeto_contratacao', $licitacao->objeto_contratacao);
-            //         $licitacao->id_gestor = $request->input('id_gestor', $licitacao->id_gestor);
-            //         $licitacao->id_integrante = $request->input('id_integrante', $licitacao->id_integrante);
-            //         $licitacao->id_fiscal = $request->input('id_fiscal', $licitacao->id_fiscal);
-            //         $licitacao->sei = $request->input('sei', $licitacao->sei);
-            //         $licitacao->sislog = $request->input('sislog', $licitacao->sislog);
-            //         $licitacao->situacao = $validatedData['situacao'];
-            //         $licitacao->local = $validatedData['local'];
-            //         $licitacao->observacao = $validatedData['observacao'];
-            //     } else {
-            //         $licitacao->situacao = $validatedData['situacao'];
-            //         $licitacao->local = $validatedData['local'];
-            //         $licitacao->observacao = $validatedData['observacao'];
-            //     }
-
-            //     $originalSituacao = $licitacao->situacao;
-            //     $originalLocal = $licitacao->local;
-            //     $originalObservacao = $licitacao->observacao;
-
-            //     $licitacao->save();
-
-            //     $alteracoes = [];
-            //     if ($originalSituacao !== $licitacao->situacao) {
-            //         $alteracoes[] = "Situação";
-            //     }
-            //     if ($originalLocal !== $licitacao->local) {
-            //         $alteracoes[] = "Local";
-            //     }
-            //     if ($originalObservacao !== $licitacao->observacao) {
-            //         $alteracoes[] = "Observação";
-            //     }
-
-            //     $email = 'aerlon.aga@gmail.com';
-            //     $assunto = 'Atualização na Licitação';
-            //     $nome = 'Destinatário';
-
-            //     $mensagem = "<h3>Olá!</h3>";
-            //     if (!empty($alteracoes)) {
-            //         $camposAlterados = implode(', ', $alteracoes);
-            //         $mensagem .= "<p>Os seguintes campos da licitação <strong>\"{$licitacao->objeto_contratacao}\"</strong> foram atualizados: <strong>{$camposAlterados}</strong>.</p>";
-            //     } else {
-            //         $mensagem .= "<p>A licitação com o objeto <strong>\"{$licitacao->objeto_contratacao}\"</strong> foi atualizada.</p>";
-            //     }
-
-            //     $mensagem .= "<p>Estamos notificando sobre uma atualização em sua licitação. Para mais detalhes, acesse o sistema.</p>";
-
-            //     $this->enviarEmailNotificacao($email, $assunto, $mensagem);
-
-            //     return response()->json(['success' => 'Situação, Local e Observação atualizados com sucesso!']);
-            // } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            //     return response()->json(['error' => 'Licitação não encontrada.'], 404);
-            // } catch (\Illuminate\Validation\ValidationException $e) {
-            //     return response()->json(['error' => 'Dados inválidos.', 'message' => $e->getMessage()], 422);
-            // } catch (\Exception $e) {
-            //     // Adicione mais informações sobre o erro para ajudar na depuração
-            //     return response()->json([
-            //         'error' => 'Erro ao atualizar situação e local.',
-            //         'message' => $e->getMessage(),
-            //         'line' => $e->getLine(),
-            //         'file' => $e->getFile(),
-            //     ], 500);
-            // }
-
-            // Valida os dados recebidos
             $validatedData = $request->validate([
-                'modalidade' => 'nullable|string',
+                'id_gestor' => 'nullable|exists:pessoas,id_pessoa',
+                'id_integrante' => 'nullable|exists:pessoas,id_pessoa',
+                'id_fiscal' => 'nullable|exists:pessoas,id_pessoa',
                 'objeto_contratacao' => 'required|string',
-                'id_gestor' => 'nullable|exists:pessoas,id',
-                'id_integrante' => 'nullable|exists:pessoas,id',
-                'id_fiscal' => 'nullable|exists:pessoas,id',
-                'sei' => 'nullable|string',
-                'sislog' => 'nullable|string',
                 'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
                 'local' => 'required|string|in:TR e/ou ETP,GELIC e GEORC,GELIC,GEORC,PROSET,PR,CACTIC',
                 'observacao' => 'nullable|string',
+                'modalidade' => 'nullable|string',
+                'sei' => 'nullable|string',
+                'sislog' => 'nullable|string',
             ]);
 
-            // Captura os valores originais antes de salvar
-            $originalData = [
-                'situacao' => $licitacao->situacao,
-                'local' => $licitacao->local,
-                'observacao' => $licitacao->observacao,
-            ];
-
-            // Atualiza os campos no modelo
-            $licitacao->fill($validatedData);
-
-            // Salva as alterações no banco
             $licitacao->save();
 
-            // Verifica quais campos foram alterados
+
+            /** @var \App\Models\User|null $user */
+            $user = Auth::user(); // Adicionando a anotação de tipo
+
+            if (Auth::check() && $user && $user->isAdmin()) {
+                $licitacao->id_gestor = $validatedData['id_gestor'] ?? $licitacao->id_gestor;
+                $licitacao->id_integrante = $validatedData['id_integrante'] ?? $licitacao->id_integrante;
+                $licitacao->id_fiscal = $validatedData['id_fiscal'] ?? $licitacao->id_fiscal;
+                $licitacao->modalidade = $validatedData['modalidade'] ?? $licitacao->modalidade;
+                $licitacao->objeto_contratacao = $validatedData['objeto_contratacao'] ?? $licitacao->objeto_contratacao;
+                $licitacao->sei = $validatedData['sei'] ?? $licitacao->sei;
+                $licitacao->sislog = $validatedData['sislog'] ?? $licitacao->sislog;
+                $licitacao->situacao = $validatedData['situacao'];
+                $licitacao->local = $validatedData['local'];
+                $licitacao->observacao = $validatedData['observacao'];
+            } else {
+                $licitacao->situacao = $validatedData['situacao'];
+                $licitacao->local = $validatedData['local'];
+                $licitacao->observacao = $validatedData['observacao'];
+            }
+
+            $originalSituacao = $licitacao->situacao;
+            $originalLocal = $licitacao->local;
+            $originalObservacao = $licitacao->observacao;
+
+            $licitacao->save();
+
             $alteracoes = [];
-            foreach ($originalData as $campo => $valorOriginal) {
-                if ($licitacao->$campo !== $valorOriginal) {
-                    $alteracoes[] = ucfirst($campo);
-                }
+            if ($originalSituacao !== $licitacao->situacao) {
+                $alteracoes[] = "Situação";
+            }
+            if ($originalLocal !== $licitacao->local) {
+                $alteracoes[] = "Local";
+            }
+            if ($originalObservacao !== $licitacao->observacao) {
+                $alteracoes[] = "Observação";
             }
 
-            // Envia notificação se houve alterações
+            $email = 'aerlon.aga@gmail.com';
+            $assunto = 'Atualização na Licitação';
+            $nome = 'Destinatário';
+
+            $mensagem = "<h3>Olá!</h3>";
             if (!empty($alteracoes)) {
-                $email = 'aerlon.aga@gmail.com';
-                $assunto = 'Atualização na Licitação';
                 $camposAlterados = implode(', ', $alteracoes);
-
-                $mensagem = "<h3>Olá!</h3>";
                 $mensagem .= "<p>Os seguintes campos da licitação <strong>\"{$licitacao->objeto_contratacao}\"</strong> foram atualizados: <strong>{$camposAlterados}</strong>.</p>";
-                $mensagem .= "<p>Para mais detalhes, acesse o sistema.</p>";
-
-                $this->enviarEmailNotificacao($email, $assunto, $mensagem);
+            } else {
+                $mensagem .= "<p>A licitação com o objeto <strong>\"{$licitacao->objeto_contratacao}\"</strong> foi atualizada.</p>";
             }
 
-            return response()->json(['success' => 'Alterações salvas com sucesso!']);
+            $mensagem .= "<p>Estamos notificando sobre uma atualização em sua licitação. Para mais detalhes, acesse o sistema.</p>";
+
+            $this->enviarEmailNotificacao($email, $assunto, $mensagem);
+
+            return response()->json(['success' => 'Situação, Local e Observação atualizados com sucesso!']);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Licitação não encontrada.'], 404);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['error' => 'Dados inválidos.', 'message' => $e->errors()], 422);
+            return response()->json(['error' => 'Dados inválidos.', 'message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
+            // Adicione mais informações sobre o erro para ajudar na depuração
             return response()->json([
-                'error' => 'Erro ao salvar alterações.',
+                'error' => 'Erro ao atualizar situação e local.',
                 'message' => $e->getMessage(),
                 'line' => $e->getLine(),
+                'file' => $e->getFile(),
             ], 500);
         }
     }
