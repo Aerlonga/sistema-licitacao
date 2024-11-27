@@ -56,7 +56,7 @@ class LicitacaoController extends Controller
             'sislog' => 'nullable|string',
             'modalidade' => 'nullable|string',
             'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
-            'local' => 'required|string|in:TR e/ou ETP,GELIC e GEORC,GELIC,GEORC,PROSET,PR,CACTIC',
+            'local' => 'required|string|in:Licitação,Orçamentária,Jurídico,Ordenador de Despesas',
         ]);
 
         $mensagemsalva = $this->licitacaoservice->salvarlicitacao([
@@ -164,7 +164,7 @@ class LicitacaoController extends Controller
                 'id_fiscal' => 'nullable|exists:pessoas,id_pessoa',
                 'objeto_contratacao' => 'required|string',
                 'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
-                'local' => 'required|string|in:TR e/ou ETP,GELIC e GEORC,GELIC,GEORC,PROSET,PR,CACTIC',
+                'local' => 'required|string|in:Licitação,Orçamentária,Jurídico,Ordenador de Despesas',
                 'observacao' => 'nullable|string',
                 'modalidade' => 'nullable|string',
                 'sei' => 'nullable|string',

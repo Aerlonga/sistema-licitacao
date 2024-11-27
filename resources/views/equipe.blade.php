@@ -67,11 +67,10 @@
                             <select id="local" name="local" class="form-control fonte-padrao">
                                 <option value="Selecione">Selecione</option>
                                 <option value="TR e/ou ETP">TR e/ou ETP</option>
-                                <option value="GELIC e GEORC">GELIC e GEORC</option>
-                                <option value="GELIC">GELIC</option>
-                                <option value="GEORC">GEORC</option>
-                                <option value="PROSET">PROSET</option>
-                                <option value="PR">PR</option>
+                                <option value="Licitação">Licitação</option>
+                                <option value="Orçamentária">Orçamentária</option>
+                                <option value="Jurídico">Jurídico</option>
+                                <option value="Ordenador de Despesas">Ordenador de Despesas</option>
                                 <option value="CACTIC">CACTIC</option>
                             </select>
                         </div>
@@ -115,4 +114,3 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('js/equipe.js') }}"></script>
 @endsection
-

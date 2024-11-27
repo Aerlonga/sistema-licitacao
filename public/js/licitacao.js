@@ -281,11 +281,10 @@ function abrirModalEditar(id) {
             $('#localText').html(`
                 <select class="form-control">
                     <option value="TR e/ou ETP" ${data.local === 'TR e/ou ETP' ? 'selected' : ''}>TR e/ou ETP</option>
-                    <option value="GELIC e GEORC" ${data.local === 'GELIC e GEORC' ? 'selected' : ''}>GELIC e GEORC</option>
-                    <option value="GELIC" ${data.local === 'GELIC' ? 'selected' : ''}>GELIC</option>
-                    <option value="GEORC" ${data.local === 'GEORC' ? 'selected' : ''}>GEORC</option>
-                    <option value="PROSET" ${data.local === 'PROSET' ? 'selected' : ''}>PROSET</option>
-                    <option value="PR" ${data.local === 'PR' ? 'selected' : ''}>PR</option>
+                    <option value="Licitação" ${data.local === 'Licitação' ? 'selected' : ''}>Licitação</option>
+                    <option value="Orçamentária" ${data.local === 'Orçamentária' ? 'selected' : ''}>Orçamentária</option>
+                    <option value="Jurídico" ${data.local === 'Jurídico' ? 'selected' : ''}>Jurídico</option>
+                    <option value="Ordenador de Despesas" ${data.local === 'Ordenador de Despesas' ? 'selected' : ''}>Ordenador de Despesas</option>
                     <option value="CACTIC" ${data.local === 'CACTIC' ? 'selected' : ''}>CACTIC</option>
                 </select>
             `);
