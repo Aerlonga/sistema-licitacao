@@ -39,10 +39,14 @@
                         <p>Contato</p>
                     </a>
                 </li>
-                <!-- Google Translate Widget -->
-                <li class="nav-item">
-                    <div id="google_translate_element"></div>
-                </li>
+                @if (Auth::check() && Auth::user()->role === 'admin')
+                    <li class="nav-item">
+                        <a href="{{ route('configuracoes') }}" class="nav-link">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p>Configurações</p>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </nav>
     </div>

@@ -5,7 +5,7 @@ use App\Http\Controllers\LicitacaoController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgotPasswordController;
-
+use App\Http\Controllers\PessoaController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -44,6 +44,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contato', function () {
         return view('contato');
     })->name('contato');
+
+    // Rotas protegidas para administradores
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/configuracoes', [PessoaController::class, 'index'])->name('configuracoes'); // View de configurações
+        Route::get('/pessoas', [PessoaController::class, 'getAll'])->name('pessoas.index'); // API para listar pessoas
+        Route::post('/pessoas', [PessoaController::class, 'store'])->name('pessoas.store'); // Criar pessoa
+        Route::put('/pessoas/{id}', [PessoaController::class, 'update'])->name('pessoas.update'); // Atualizar pessoa
+        Route::delete('/pessoas/{id}', [PessoaController::class, 'destroy'])->name('pessoas.destroy'); // Excluir pessoa
+    });    
 
     Route::post('/gerar-equipe', [LicitacaoController::class, 'gerarEquipe'])->name('LicitacoesSalvar');
     Route::get('/listarLicitacoes', [LicitacaoController::class, 'listarLicitacoes'])->name('listarLicitacoes');
