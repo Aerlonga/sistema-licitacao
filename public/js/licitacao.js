@@ -98,87 +98,133 @@ function toggleEditMode() {
 }
 
 
+// function salvarEdicao() {
+//     const licitacaoId = $('#visualizarLicitacaoModal').data('licitacaoId');
+
+//     // Captura os valores dos campos
+//     const data = {
+//         modalidade: $('#modalidadeText input').val() || null,
+//         objeto_contratacao: $('#objetoText input').length
+//             ? $('#objetoText input').val().trim()
+//             : $('#objetoText span').text().trim(),
+//         gestor: $('#gestorText input').val() || null,
+//         integrante: $('#integranteText input').val() || null,
+//         fiscal: $('#fiscalText input').val() || null,
+//         data_inclusao: $('#dataInclusaoText span').text().trim() || null, // Somente leitura
+//         sei: $('#seiText input').val() || null,
+//         sislog: $('#sislogText input').val() || null,
+//         situacao: $('#situacaoText select').val() || null,
+//         local: $('#localText select').val() || null,
+//         observacao: $('#observacaoText input').val() || null,
+//     };
+
+//     // Valida os campos obrigatórios no frontend (opcional)
+//     if (!data.objeto_contratacao) {
+//         Swal.fire({
+//             title: 'Erro',
+//             text: 'O campo "Objeto da Contratação" é obrigatório.',
+//             icon: 'error',
+//             confirmButtonText: 'OK'
+//         });
+//         return;
+//     }
+
+//     // Desativa o botão de salvar para evitar múltiplos cliques
+//     $('#salvarButton').prop('disabled', true);
+
+//     // Envia a requisição AJAX
+//     $.ajax({
+//         url: `/licitacoes/${licitacaoId}`,
+//         method: 'PUT',
+//         data: data,
+//         success: function (response) {
+//             // Exibe mensagem de sucesso
+//             Swal.fire({
+//                 title: 'Alterações Salvas!',
+//                 text: 'As alterações foram salvas com sucesso.',
+//                 icon: 'success',
+//                 confirmButtonText: 'OK'
+//             }).then(() => {
+//                 $('#visualizarLicitacaoModal').modal('hide');
+//                 inicializarTabelaLicitacoes(); // Recarrega a tabela
+//             });
+//         },
+//         error: function (xhr) {
+//             console.error('Erro ao salvar alterações:', xhr.responseText);
+
+//             // Exibe mensagem de erro
+//             Swal.fire({
+//                 title: 'Erro',
+//                 text: 'Houve um erro ao salvar as alterações. Verifique os campos obrigatórios.',
+//                 icon: 'error',
+//                 confirmButtonText: 'OK'
+//             });
+//         },
+//         complete: function () {
+//             // Reativa o botão de salvar após a conclusão da requisição
+//             $('#salvarButton').prop('disabled', false);
+//         }
+//     });
+// }
+
+// Função para cancelar a edição
+
 function salvarEdicao() {
     const licitacaoId = $('#visualizarLicitacaoModal').data('licitacaoId');
 
-    // Captura os valores dos campos
+    // Dados capturados do modal
     const data = {
         modalidade: $('#modalidadeText input').val() || null,
-        objeto_contratacao: $('#objetoText input').length
-            ? $('#objetoText input').val().trim()
-            : $('#objetoText span').text().trim(),
-        gestor: $('#gestorText input').val() || null,
-        integrante: $('#integranteText input').val() || null,
-        fiscal: $('#fiscalText input').val() || null,
-        data_inclusao: $('#dataInclusaoText span').text().trim() || null, // Somente leitura
-        sei: $('#seiText input').val() || null,
-        sislog: $('#sislogText input').val() || null,
+        objeto_contratacao: $('#objetoText input').val()?.trim() || null,
+        id_gestor: $('#gestorText select').val() || null,
+        id_integrante: $('#integranteText select').val() || null,
+        id_fiscal: $('#fiscalText select').val() || null,
+        sei: $('#seiText input').val()?.trim() || null,
+        sislog: $('#sislogText input').val()?.trim() || null,
         situacao: $('#situacaoText select').val() || null,
         local: $('#localText select').val() || null,
-        observacao: $('#observacaoText input').val() || null,
+        observacao: $('#observacaoText input').val()?.trim() || null,
     };
 
-    // Valida os campos obrigatórios no frontend (opcional)
-    if (!data.objeto_contratacao) {
-        Swal.fire({
-            title: 'Erro',
-            text: 'O campo "Objeto da Contratação" é obrigatório.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    // Desativa o botão de salvar para evitar múltiplos cliques
-    $('#salvarButton').prop('disabled', true);
-
-    // Envia a requisição AJAX
+     // Log para verificação
+     console.log(data);
+    
+    // Requisição AJAX
     $.ajax({
         url: `/licitacoes/${licitacaoId}`,
         method: 'PUT',
         data: data,
         success: function (response) {
-            // Exibe mensagem de sucesso
-            Swal.fire({
-                title: 'Alterações Salvas!',
-                text: 'As alterações foram salvas com sucesso.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                $('#visualizarLicitacaoModal').modal('hide');
-                inicializarTabelaLicitacoes(); // Recarrega a tabela
-            });
+            Swal.fire('Sucesso!', 'Alterações salvas com sucesso.', 'success');
+            $('#visualizarLicitacaoModal').modal('hide');
+            $('#licitacoesTable').DataTable().ajax.reload();
         },
         error: function (xhr) {
-            console.error('Erro ao salvar alterações:', xhr.responseText);
-
-            // Exibe mensagem de erro
-            Swal.fire({
-                title: 'Erro',
-                text: 'Houve um erro ao salvar as alterações. Verifique os campos obrigatórios.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+            Swal.fire('Erro!', 'Erro ao salvar as alterações.', 'error');
+            console.error(xhr.responseText);
         },
-        complete: function () {
-            // Reativa o botão de salvar após a conclusão da requisição
-            $('#salvarButton').prop('disabled', false);
-        }
     });
 }
 
 
 
-
-// Função para cancelar a edição
 function cancelarEdicao() {
     const licitacaoId = $('#visualizarLicitacaoModal').data('licitacaoId');
     abrirModalEditar(licitacaoId); // Reabre o modal com dados originais
 }
 
 function excluirLicitacao(id) {
-    SweetAlertGoInfra.confirmar("Tem certeza que deseja excluir esta licitação", function (isConfirmed) {
-        if (isConfirmed) {
+    Swal.fire({
+        title: 'Tem certeza que deseja excluir esta licitação?',
+        text: 'Essa ação não poderá ser desfeita.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
             $.ajax({
                 url: `/licitacoes/${id}`, // URL para o endpoint de atualização
                 type: 'PUT', // Método PUT para atualização
@@ -191,8 +237,8 @@ function excluirLicitacao(id) {
                 success: function (response) {
                     // Usar SweetAlert para mensagem de sucesso
                     Swal.fire({
-                        title: 'Licitação excluída com sucesso!',
-                        text: '',
+                        title: 'Excluído!',
+                        text: 'Licitação excluída com sucesso.',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
@@ -204,21 +250,103 @@ function excluirLicitacao(id) {
                     console.error('Erro ao excluir a licitação:', xhr.responseText);
                     // Usar SweetAlert para mensagens de erro
                     Swal.fire({
-                        title: 'Erro',
+                        title: 'Erro!',
                         text: 'Houve um erro ao tentar excluir a licitação.',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                 }
             });
-        } else {
-            SweetAlertGoInfra.alerta('Exclusão cancelada.');
         }
     });
 }
 
 
-// Função para abrir o modal de edição com os detalhes da licitação
+
+// function abrirModalEditar(id) {
+//     $.ajax({
+//         url: `/licitacoes/${id}/show`,
+//         method: 'GET',
+//         success: function (response) {
+//             const data = response.data;
+//             const isAdmin = response.isAdmin;
+
+//             // Renderiza os campos com base no tipo de usuário
+//             $('#modalidadeText').html(isAdmin
+//                 ? `<input type="text" class="form-control" value="${data.modalidade}">`
+//                 : `<span>${data.modalidade || 'N/A'}</span>`);
+
+//             $('#objetoText').html(isAdmin
+//                 ? `<input type="text" class="form-control" value="${data.objeto_contratacao || ''}">`
+//                 : `<span>${data.objeto_contratacao || ''}</span>`);
+
+//             $('#gestorText').html(isAdmin
+//                 ? `<select class="form-control">
+//                     <option value="Vitor" ${data.gestor === 'Vitor' ? 'selected' : ''}>Vitor</option>
+//                     <option value="Thaynara" ${data.gestor === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+//                     <option value="Francielle" ${data.gestor === 'Francielle' ? 'selected' : ''}>Francielle</option>
+//                    </select>`
+//                 : `<span>${data.gestor || 'N/A'}</span>`);
+
+//             $('#integranteText').html(isAdmin
+//                 ? `<select class="form-control">
+//                     <option value="Vitor" ${data.integrante === 'Vitor' ? 'selected' : ''}>Vitor</option>
+//                     <option value="Thaynara" ${data.integrante === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+//                     <option value="Francielle" ${data.integrante === 'Francielle' ? 'selected' : ''}>Francielle</option>
+//                    </select>`
+//                 : `<span>${data.integrante || 'N/A'}</span>`);
+
+//             $('#fiscalText').html(isAdmin
+//                 ? `<select class="form-control">
+//                     <option value="Vitor" ${data.fiscal === 'Vitor' ? 'selected' : ''}>Vitor</option>
+//                     <option value="Thaynara" ${data.fiscal === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
+//                     <option value="Francielle" ${data.fiscal === 'Francielle' ? 'selected' : ''}>Francielle</option>
+//                    </select>`
+//                 : `<span>${data.fiscal || 'N/A'}</span>`);
+
+//             $('#dataInclusaoText').html(`<span>${data.data_inclusao || 'N/A'}</span>`);
+//             $('#seiText').html(isAdmin
+//                 ? `<input type="text" class="form-control" value="${data.sei}">`
+//                 : `<span>${data.sei || 'N/A'}</span>`);
+
+//             $('#sislogText').html(isAdmin
+//                 ? `<input type="text" class="form-control" value="${data.sislog}">`
+//                 : `<span>${data.sislog || 'N/A'}</span>`);
+
+//             // Campos editáveis para todos os usuários
+//             $('#situacaoText').html(` 
+//                 <select class="form-control">
+//                     <option value="Em andamento" ${data.situacao === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
+//                     <option value="Em outro setor" ${data.situacao === 'Em outro setor' ? 'selected' : ''}>Em outro setor</option>
+//                     <option value="Finalizado" ${data.situacao === 'Finalizado' ? 'selected' : ''}>Finalizado</option>
+//                 </select>
+//             `);
+
+//             $('#localText').html(`
+//                 <select class="form-control">
+//                     <option value="TR e/ou ETP" ${data.local === 'TR e/ou ETP' ? 'selected' : ''}>TR e/ou ETP</option>
+//                     <option value="GELIC e GEORC" ${data.local === 'GELIC e GEORC' ? 'selected' : ''}>GELIC e GEORC</option>
+//                     <option value="GELIC" ${data.local === 'GELIC' ? 'selected' : ''}>GELIC</option>
+//                     <option value="GEORC" ${data.local === 'GEORC' ? 'selected' : ''}>GEORC</option>
+//                     <option value="PROSET" ${data.local === 'PROSET' ? 'selected' : ''}>PROSET</option>
+//                     <option value="PR" ${data.local === 'PR' ? 'selected' : ''}>PR</option>
+//                     <option value="CACTIC" ${data.local === 'CACTIC' ? 'selected' : ''}>CACTIC</option>
+//                 </select>
+//             `);
+
+//             $('#observacaoText').html(`<input type="text" class="form-control" value="${data.observacao || ''}">`);
+
+//             // Exibe o modal
+//             $('#visualizarLicitacaoModal').modal('show');
+//             $('#visualizarLicitacaoModal').data('licitacaoId', id);
+//         },
+//         error: function (xhr) {
+//             console.error('Erro ao carregar os detalhes da licitação:', xhr.responseText);
+//             Swal.fire('Erro', 'Não foi possível carregar os detalhes da licitação.', 'error');
+//         }
+//     })
+// }
+
 function abrirModalEditar(id) {
     $.ajax({
         url: `/licitacoes/${id}/show`,
@@ -226,8 +354,18 @@ function abrirModalEditar(id) {
         success: function (response) {
             const data = response.data;
             const isAdmin = response.isAdmin;
+            const pessoas = data.pessoas || []; // Carrega as pessoas disponíveis
 
-            // Renderiza os campos com base no tipo de usuário
+            // Gera as opções dinamicamente para o select
+            const gerarOpcoes = (selectedId) => {
+                return pessoas
+                    .map(pessoa =>
+                        `<option value="${pessoa.id}" ${pessoa.id === selectedId ? 'selected' : ''}>${pessoa.nome}</option>`
+                    )
+                    .join('');
+            };
+
+            // Preenche os campos do modal
             $('#modalidadeText').html(isAdmin
                 ? `<input type="text" class="form-control" value="${data.modalidade}">`
                 : `<span>${data.modalidade || 'N/A'}</span>`);
@@ -237,30 +375,19 @@ function abrirModalEditar(id) {
                 : `<span>${data.objeto_contratacao || ''}</span>`);
 
             $('#gestorText').html(isAdmin
-                ? `<select class="form-control">
-                    <option value="Vitor" ${data.gestor === 'Vitor' ? 'selected' : ''}>Vitor</option>
-                    <option value="Thaynara" ${data.gestor === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
-                    <option value="Francielle" ${data.gestor === 'Francielle' ? 'selected' : ''}>Francielle</option>
-                   </select>`
+                ? `<select class="form-control">${gerarOpcoes(data.gestor_id)}</select>`
                 : `<span>${data.gestor || 'N/A'}</span>`);
 
             $('#integranteText').html(isAdmin
-                ? `<select class="form-control">
-                    <option value="Vitor" ${data.integrante === 'Vitor' ? 'selected' : ''}>Vitor</option>
-                    <option value="Thaynara" ${data.integrante === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
-                    <option value="Francielle" ${data.integrante === 'Francielle' ? 'selected' : ''}>Francielle</option>
-                   </select>`
+                ? `<select class="form-control">${gerarOpcoes(data.integrante_id)}</select>`
                 : `<span>${data.integrante || 'N/A'}</span>`);
 
             $('#fiscalText').html(isAdmin
-                ? `<select class="form-control">
-                    <option value="Vitor" ${data.fiscal === 'Vitor' ? 'selected' : ''}>Vitor</option>
-                    <option value="Thaynara" ${data.fiscal === 'Thaynara' ? 'selected' : ''}>Thaynara</option>
-                    <option value="Francielle" ${data.fiscal === 'Francielle' ? 'selected' : ''}>Francielle</option>
-                   </select>`
+                ? `<select class="form-control">${gerarOpcoes(data.fiscal_id)}</select>`
                 : `<span>${data.fiscal || 'N/A'}</span>`);
 
             $('#dataInclusaoText').html(`<span>${data.data_inclusao || 'N/A'}</span>`);
+
             $('#seiText').html(isAdmin
                 ? `<input type="text" class="form-control" value="${data.sei}">`
                 : `<span>${data.sei || 'N/A'}</span>`);
@@ -269,8 +396,7 @@ function abrirModalEditar(id) {
                 ? `<input type="text" class="form-control" value="${data.sislog}">`
                 : `<span>${data.sislog || 'N/A'}</span>`);
 
-            // Campos editáveis para todos os usuários
-            $('#situacaoText').html(` 
+            $('#situacaoText').html(`
                 <select class="form-control">
                     <option value="Em andamento" ${data.situacao === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
                     <option value="Em outro setor" ${data.situacao === 'Em outro setor' ? 'selected' : ''}>Em outro setor</option>
