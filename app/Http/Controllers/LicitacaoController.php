@@ -143,7 +143,6 @@ class LicitacaoController extends Controller
     public function update(Request $request, $id)
     {
         Log::info($request->all());
-        
         try {
             $licitacao = Licitacao::findOrFail($id);
 
