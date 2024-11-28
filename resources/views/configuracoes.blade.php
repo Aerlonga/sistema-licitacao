@@ -5,44 +5,53 @@
 @endsection
 
 @section('conteudo-pagina')
-    <div class="container">
-        <h1>Configurações</h1>
-        <p>Bem-vindo à área de configurações. Apenas administradores podem acessar esta página.</p>
-
-        <!-- Botão para adicionar nova pessoa -->
-        <button class="btn btn-primary mb-3" onclick="abrirModalCriar()">Adicionar Pessoa</button>
-
-        <!-- Tabela de pessoas -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="pessoasTabela">
-                @foreach ($pessoas as $pessoa)
-                    <tr>
-                        <td>{{ $pessoa->nome }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"
-                                onclick="abrirModalEditar({{ $pessoa->id_pessoa }}, '{{ $pessoa->nome }}')">Editar</button>
-                            <form action="{{ route('pessoas.destroy', $pessoa->id_pessoa) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="mb-4 mt-2">Configurações</h1>
+                <p>Bem-vindo à área de configurações. Apenas administradores podem acessar esta página.</p>
+                <div class="card card-default">
+                    <div class="card-body table-responsive">
+                        <!-- Tabela de pessoas -->
+                        <table id="pessoasTable" class="table table-bordered table-striped w-100">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pessoasTabela">
+                                @foreach ($pessoas as $pessoa)
+                                    <tr>
+                                        <td>{{ $pessoa->nome }}</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm"
+                                                onclick="abrirModalEditar({{ $pessoa->id_pessoa }}, '{{ $pessoa->nome }}')">Editar</button>
+                                            <form action="{{ route('pessoas.destroy', $pessoa->id_pessoa) }}" method="POST"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <!-- Botão para adicionar nova pessoa -->
+                        <div class="d-flex justify-content-end mb-3">
+                            <button class="btn btn-primary" onclick="abrirModalCriar()">Adicionar Pessoa</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Modal para criar/editar pessoa -->
+    {{-- inicio do modal --}}
+
     <div class="modal fade" id="modalPessoa" tabindex="-1" aria-labelledby="modalPessoaLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalPessoaLabel">Adicionar Pessoa</h5>
