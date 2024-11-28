@@ -23,7 +23,6 @@ function carregarPessoas() {
             data.forEach(pessoa => {
                 tabela.innerHTML += `
                     <tr>
-                        <td>${pessoa.id_pessoa}</td>
                         <td>${pessoa.nome}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="abrirModalEditar(${pessoa.id_pessoa}, '${pessoa.nome}')">Editar</button>

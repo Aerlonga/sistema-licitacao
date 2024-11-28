@@ -16,7 +16,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Nome</th>
                     <th>Ações</th>
                 </tr>
@@ -24,7 +23,6 @@
             <tbody id="pessoasTabela">
                 @foreach ($pessoas as $pessoa)
                     <tr>
-                        <td>{{ $pessoa->id_pessoa }}</td>
                         <td>{{ $pessoa->nome }}</td>
                         <td>
                             <button class="btn btn-warning btn-sm"
