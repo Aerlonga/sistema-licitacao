@@ -41,7 +41,6 @@ class PessoaController extends Controller
     }
 
 
-    // Salvar uma nova pessoa
     public function store(Request $request)
     {
         $request->validate([
@@ -51,23 +50,13 @@ class PessoaController extends Controller
         try {
             $pessoa = Pessoa::create(['nome' => $request->nome]); // Criação
 
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => 'Pessoa adicionada com sucesso!',
-                    'data' => $pessoa,
-                ], 201);
-            }
-
-
-            return redirect()->route('configuracoes')->with('success', 'Pessoa adicionada com sucesso!');
+            return response()->json([
+                'success' => 'Pessoa adicionada com sucesso!',
+                'data' => $pessoa,
+            ], 201);
         } catch (\Exception $e) {
             Log::error('Erro ao salvar pessoa:', ['message' => $e->getMessage()]);
-
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Erro ao adicionar pessoa.'], 500);
-            }
-
-            return redirect()->route('configuracoes')->with('error', 'Erro ao adicionar pessoa.');
+            return response()->json(['error' => 'Erro ao adicionar pessoa.'], 500);
         }
     }
 
@@ -80,21 +69,18 @@ class PessoaController extends Controller
 
         try {
             $pessoa = Pessoa::findOrFail($id);
-            $pessoa->update(['nome' => $request->nome]);
+            $pessoa->update(['nome' => $request->nome]); // Atualiza o registro
 
-            if ($request->expectsJson()) {
-                return response()->json(['success' => 'Pessoa atualizada com sucesso!', 'data' => $pessoa], 200);
-            }
-
-            return redirect()->route('configuracoes')->with('success', 'Pessoa atualizada com sucesso!');
+            return response()->json([
+                'success' => 'Pessoa atualizada com sucesso!',
+                'data' => $pessoa,
+            ], 200);
         } catch (\Exception $e) {
             Log::error('Erro ao atualizar pessoa:', ['message' => $e->getMessage()]);
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Erro ao atualizar pessoa.'], 500);
-            }
-            return redirect()->route('configuracoes')->with('error', 'Erro ao atualizar pessoa.');
+            return response()->json(['error' => 'Erro ao atualizar pessoa.'], 500);
         }
     }
+
 
     public function destroy($id)
     {

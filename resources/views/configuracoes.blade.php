@@ -13,35 +13,17 @@
                 <div class="card card-default">
                     <div class="card-body table-responsive">
                         <!-- Tabela de pessoas -->
-                        <table id="pessoasTable" class="table table-bordered table-striped w-100">
+                        <table id="pessoasTable" class="table table-bordered table-striped w-100" data-url="/pessoas">
                             <thead>
                                 <tr>
                                     <th>Nome</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="pessoasTabela">
-                                @foreach ($pessoas as $pessoa)
-                                    <tr>
-                                        <td>{{ $pessoa->nome }}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm"
-                                                onclick="abrirModalEditar({{ $pessoa->id_pessoa }}, '{{ $pessoa->nome }}')">Editar</button>
-                                            <form action="{{ route('pessoas.destroy', $pessoa->id_pessoa) }}" method="POST"
-                                                style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                            <tbody>
+                                <!-- Conteúdo será carregado dinamicamente pelo DataTables -->
                             </tbody>
                         </table>
-                        <!-- Botão para adicionar nova pessoa -->
-                        <div class="d-flex justify-content-end mb-3">
-                            <button class="btn btn-primary" onclick="abrirModalCriar()">Adicionar Pessoa</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -58,15 +40,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formPessoa" action="{{ route('pessoas.store') }}" method="POST">
+                    <form id="formPessoa">
                         @csrf
                         <input type="hidden" name="id" id="pessoaId">
                         <div class="mb-3">
                             <label for="pessoaNome" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="pessoaNome" name="nome" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
                     </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-danger" id="excluirPessoaButton" onclick="excluirPessoaModal()"><i
+                            class="fas fa-trash"></i> Excluir</button>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="salvarPessoa()">Salvar</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                    </div>
                 </div>
             </div>
         </div>
