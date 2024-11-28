@@ -110,12 +110,12 @@ class PessoaController extends Controller
             if ($temVinculos) {
                 if (request()->expectsJson()) {
                     return response()->json([
-                        'error' => 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de inativá-la.'
+                        'error' => 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de excluí-la.'
                     ], 400);
                 }
 
                 return redirect()->route('configuracoes')
-                    ->with('error', 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de inativá-la.');
+                    ->with('error', 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de excluí-la.');
             }
 
             // Marcar como inativa
