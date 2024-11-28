@@ -5,27 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Pessoa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Licitacao;
 
 class PessoaController extends Controller
 {
-    // Exibir a lista de pessoas
+
     public function index()
     {
-        $pessoas = Pessoa::all(); // Busca todas as pessoas
-        return view('configuracoes', compact('pessoas')); // Passa os dados para a view
+        $pessoas = Pessoa::where('ativo', 1)->get(); // Busca apenas pessoas ativas
+        return view('configuracoes', compact('pessoas'));
     }
 
     // Listar pessoas no formato JSON (API)
+    // public function getAll()
+    // {
+    //     try {
+    //         $pessoas = Pessoa::all(); // Busca todas as pessoas
+    //         return response()->json($pessoas); // Retorna no formato JSON
+    //     } catch (\Exception $e) {
+    //         Log::error('Erro ao buscar pessoas:', ['message' => $e->getMessage()]);
+    //         return response()->json(['error' => 'Erro ao buscar pessoas.'], 500);
+    //     }
+    // }
+
     public function getAll()
     {
         try {
-            $pessoas = Pessoa::all(); // Busca todas as pessoas
-            return response()->json($pessoas); // Retorna no formato JSON
+            // Busca apenas pessoas ativas
+            $pessoas = Pessoa::where('ativo', 1)->get();
+            return response()->json($pessoas); // Retorna os dados como JSON
         } catch (\Exception $e) {
             Log::error('Erro ao buscar pessoas:', ['message' => $e->getMessage()]);
             return response()->json(['error' => 'Erro ao buscar pessoas.'], 500);
         }
     }
+
 
     // Salvar uma nova pessoa
     public function store(Request $request)
@@ -36,14 +50,14 @@ class PessoaController extends Controller
 
         try {
             $pessoa = Pessoa::create(['nome' => $request->nome]); // Criação
-            
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => 'Pessoa adicionada com sucesso!',
                     'data' => $pessoa,
                 ], 201);
             }
-            
+
 
             return redirect()->route('configuracoes')->with('success', 'Pessoa adicionada com sucesso!');
         } catch (\Exception $e) {
@@ -82,28 +96,47 @@ class PessoaController extends Controller
         }
     }
 
-
-    // Excluir uma pessoa
     public function destroy($id)
     {
         try {
             $pessoa = Pessoa::findOrFail($id);
-            $pessoa->delete();
 
-            // Verifica se a requisição espera JSON
-            if (request()->expectsJson()) {
-                return response()->json(['success' => 'Pessoa excluída com sucesso!'], 200);
+            // Verificar se a pessoa está vinculada a uma licitação
+            $temVinculos = Licitacao::where('id_gestor', $id)
+                ->orWhere('id_integrante', $id)
+                ->orWhere('id_fiscal', $id)
+                ->exists();
+
+            if ($temVinculos) {
+                if (request()->expectsJson()) {
+                    return response()->json([
+                        'error' => 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de inativá-la.'
+                    ], 400);
+                }
+
+                return redirect()->route('configuracoes')
+                    ->with('error', 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de inativá-la.');
             }
 
-            return redirect()->route('configuracoes')->with('success', 'Pessoa excluída com sucesso!');
+            // Marcar como inativa
+            $pessoa->ativo = 0;
+            $pessoa->save();
+
+            if (request()->expectsJson()) {
+                return response()->json(['success' => 'Pessoa excluída com sucesso!']);
+            }
+
+            return redirect()->route('configuracoes')
+                ->with('success', 'Pessoa excluída com sucesso!');
         } catch (\Exception $e) {
-            Log::error('Erro ao excluir pessoa:', ['message' => $e->getMessage()]);
+            Log::error('Erro ao inativar pessoa:', ['message' => $e->getMessage()]);
 
             if (request()->expectsJson()) {
-                return response()->json(['error' => 'Erro ao excluir pessoa.'], 500);
+                return response()->json(['error' => 'Erro ao inativar a pessoa.'], 500);
             }
 
-            return redirect()->route('configuracoes')->with('error', 'Erro ao excluir pessoa.');
+            return redirect()->route('configuracoes')
+                ->with('error', 'Erro ao inativar a pessoa.');
         }
     }
 }

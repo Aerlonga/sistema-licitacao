@@ -91,14 +91,13 @@ function salvarPessoa() {
         });
 }
 
-
 function excluirPessoa(id) {
     Swal.fire({
         title: 'Tem certeza?',
-        text: 'Essa ação não pode ser desfeita!',
+        text: 'Essa pessoa será excluída!',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sim, excluir!',
+        confirmButtonText: 'Sim, continuar!',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
@@ -108,22 +107,27 @@ function excluirPessoa(id) {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                }
+                    'Accept': 'application/json',
+                },
             })
-                .then(response => {
+                .then((response) => {
+                    // Verifica se a resposta foi bem-sucedida
                     if (!response.ok) {
-                        throw new Error('Erro na resposta do servidor');
+                        return response.json().then((data) => {
+                            // Lança o erro para o catch caso seja um erro conhecido
+                            throw new Error(data.error || 'Erro desconhecido.');
+                        });
                     }
                     return response.json();
                 })
-                .then(data => {
-                    Swal.fire('Excluído!', data.success || 'A pessoa foi excluída.', 'success');
+                .then((data) => {
+                    // Mostra mensagem de sucesso
+                    Swal.fire('Sucesso!', data.success || 'Pessoa excluída com sucesso!.', 'success');
                     carregarPessoas();
                 })
-                .catch(error => {
-                    console.error('Erro ao excluir pessoa:', error);
-                    Swal.fire('Erro!', 'Não foi possível excluir a pessoa.', 'error');
+                .catch((error) => {
+                    // Mostra mensagem de erro personalizada
+                    Swal.fire('Erro!', error.message || 'Não foi possível inativar a pessoa.', 'error');
                 });
         }
     });

@@ -56,7 +56,7 @@ class LicitacaoController extends Controller
             'sislog' => 'nullable|string',
             'modalidade' => 'nullable|string',
             'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
-            'local' => 'required|string|in:Licitação,Orçamentária,Jurídico,Ordenador de Despesas',
+            'local' => 'required|string|in:TR e/ou ETP,Licitação,Orçamentária,Jurídico,Ordenador de Despesas, CACTIC',
         ]);
 
         $mensagemsalva = $this->licitacaoservice->salvarlicitacao([
@@ -75,7 +75,7 @@ class LicitacaoController extends Controller
     {
         try {
             $licitacao = Licitacao::with(['gestor', 'integrante', 'fiscal'])->findOrFail($id);
-            $pessoas = \App\Models\Pessoa::all(); // Carrega todas as pessoas
+            $pessoas = \App\Models\Pessoa::where('ativo', 1)->get(); // Carrega todas as pessoas
 
             /** @var \App\Models\User|null $user */
             $user = Auth::user();
@@ -164,7 +164,7 @@ class LicitacaoController extends Controller
                 'id_fiscal' => 'nullable|exists:pessoas,id_pessoa',
                 'objeto_contratacao' => 'required|string',
                 'situacao' => 'required|string|in:Em andamento,Em outro setor,Finalizado',
-                'local' => 'required|string|in:Licitação,Orçamentária,Jurídico,Ordenador de Despesas',
+                'local' => 'required|string|in:TR e/ou ETP,Licitação,Orçamentária,Jurídico,Ordenador de Despesas,CACTIC',
                 'observacao' => 'nullable|string',
                 'modalidade' => 'nullable|string',
                 'sei' => 'nullable|string',
