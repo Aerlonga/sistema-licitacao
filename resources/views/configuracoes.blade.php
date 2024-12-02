@@ -17,6 +17,7 @@
                             <thead>
                                 <tr>
                                     <th>Nome</th>
+                                    <th>Sobrenome</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -45,6 +46,10 @@
                         <div class="mb-3">
                             <label for="pessoaNome" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="pessoaNome" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pessoaSobrenome" class="form-label">Sobrenome</label>
+                            <input type="text" class="form-control" id="pessoaSobrenome" name="sobrenome" required>
                         </div>
                     </form>
                 </div>

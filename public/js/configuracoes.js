@@ -1,16 +1,15 @@
-// document.addEventListener('DOMContentLoaded', function () {
-//     carregarPessoas();
-
-//     // Submit do formulário do modal
-//     document.getElementById('formPessoa').addEventListener('submit', function (event) {
-//         event.preventDefault();
-//         salvarPessoa();
-//     });
-// });
-
 document.addEventListener('DOMContentLoaded', function () {
     inicializarTabelaPessoas();
 });
+
+const formPessoa = document.getElementById('formPessoa');
+if (formPessoa) {
+    formPessoa.addEventListener('submit', function (event) {
+        event.preventDefault(); // Previne o comportamento padrão de recarregar a página
+        salvarPessoa(); // Chama a função de salvar ao pressionar Enter
+    });
+}
+
 
 
 function inicializarTabelaPessoas() {
@@ -50,17 +49,22 @@ function inicializarTabelaPessoas() {
             autoWidth: false,
             scrollX: true,
             ajax: {
-                url: $(pessoasTable).data('url'), // Obtém a URL do atributo data-url
+                url: $(pessoasTable).data('url'),
                 type: 'GET',
-                dataSrc: '', // Fonte dos dados
+                dataSrc: '',
+                error: function (xhr, status, error) {
+                    console.error('Erro no DataTables:', xhr.responseText);
+                }
             },
             columns: [
                 { data: 'nome' }, // Nome da pessoa
+                { data: 'sobrenome' }, // Sobrenome da pessoa
                 {
                     data: null,
                     render: function (data) {
                         return `
-                            <button class="btn btn-warning btn-sm" onclick="abrirModalEditar(${data.id_pessoa}, '${data.nome}')">Editar</button>
+                            <button class="btn btn-warning btn-sm" 
+                                onclick="abrirModalEditar(${data.id_pessoa}, '${data.nome}', '${data.sobrenome}')">Editar</button>
                         `;
                     },
                     orderable: false,
@@ -82,6 +86,7 @@ function abrirModalCriar() {
     // Limpa os valores do modal para criação
     document.getElementById('pessoaId').value = '';
     document.getElementById('pessoaNome').value = '';
+    document.getElementById('pessoaSobrenome').value = '';
     document.getElementById('modalPessoaLabel').textContent = 'Adicionar Pessoa';
 
     // Oculta o botão de exclusão
@@ -94,10 +99,11 @@ function abrirModalCriar() {
 }
 
 
-function abrirModalEditar(id, nome) {
+function abrirModalEditar(id, nome, sobrenome) {
     // Preenche os valores do modal para edição
     document.getElementById('pessoaId').value = id;
     document.getElementById('pessoaNome').value = nome;
+    document.getElementById('pessoaSobrenome').value = sobrenome; // Adiciona o sobrenome
     document.getElementById('modalPessoaLabel').textContent = 'Editar Pessoa';
 
     // Exibe o botão de exclusão e associa o ID ao botão
@@ -110,32 +116,77 @@ function abrirModalEditar(id, nome) {
     $('#modalPessoa').modal('show');
 }
 
+
+// function salvarPessoa() {
+//     const id = document.getElementById('pessoaId').value; // ID da pessoa no campo oculto
+//     const nome = document.getElementById('pessoaNome').value.trim(); // Nome no formulário
+//     const sobrenome = document.getElementById('pessoaSobrenome').value.trim(); // Sobrenome no formulário
+
+//     if (!nome || !sobrenome) {
+//         Swal.fire('Erro!', 'Os campos nome e sobrenome são obrigatórios.', 'error');
+//         return;
+//     }
+
+//     // Decida se será criação ou edição com base no ID
+//     const url = id ? `/pessoas/${id}` : '/pessoas';
+//     const method = id ? 'PUT' : 'POST';
+
+//     fetch(url, {
+//         method: method,
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+//         },
+//         body: JSON.stringify({ nome, sobrenome }),
+//     })
+//         .then((response) => {
+//             if (!response.ok) {
+//                 return response.json().then((data) => {
+//                     throw new Error(data.error || 'Erro ao salvar os dados.');
+//                 });
+//             }
+//             return response.json();
+//         })
+//         .then((data) => {
+//             $('#modalPessoa').modal('hide'); // Fecha o modal
+//             Swal.fire('Sucesso!', data.success || 'Pessoa salva com sucesso.', 'success');
+//             $('#pessoasTable').DataTable().ajax.reload(); // Recarrega a tabela
+//         })
+//         .catch((error) => {
+//             console.error('Erro ao salvar pessoa:', error);
+//             Swal.fire('Erro!', error.message || 'Erro ao salvar pessoa.', 'error');
+//         });
+// }
+
 function salvarPessoa() {
     const id = document.getElementById('pessoaId').value; // ID da pessoa no campo oculto
     const nome = document.getElementById('pessoaNome').value.trim(); // Nome no formulário
+    const sobrenome = document.getElementById('pessoaSobrenome').value.trim(); // Sobrenome no formulário
 
-    if (!nome) {
-        Swal.fire('Erro!', 'O campo nome é obrigatório.', 'error');
+    if (!nome || !sobrenome) {
+        Swal.fire('Erro!', 'Os campos nome e sobrenome são obrigatórios.', 'error');
         return;
     }
 
-    // Decida se será criação ou edição com base no ID
-    const url = id ? `/pessoas/${id}` : '/pessoas'; // Se o ID existir, atualiza, caso contrário, cria
-    const method = id ? 'PUT' : 'POST'; // Define o método correto
+    const url = id ? `/pessoas/${id}` : '/pessoas';
+    const method = id ? 'PUT' : 'POST';
 
     fetch(url, {
         method: method,
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json',
         },
-        body: JSON.stringify({ nome }), // Envia apenas o nome
+        body: JSON.stringify({ nome, sobrenome }),
     })
         .then((response) => {
             if (!response.ok) {
+                if (response.status === 405) {
+                    throw new Error('Nome ou Sobrenome não permitido! Favor digite apenas letras!');
+                }
+
                 return response.json().then((data) => {
-                    throw new Error(data.message || 'Erro ao salvar os dados.');
+                    throw new Error(data.error || 'Erro ao salvar os dados.');
                 });
             }
             return response.json();
@@ -146,7 +197,9 @@ function salvarPessoa() {
             $('#pessoasTable').DataTable().ajax.reload(); // Recarrega a tabela
         })
         .catch((error) => {
-            console.error('Erro ao salvar pessoa:', error);
+            console.error('Erro ao salvar pessoa:', error.message);
+
+            // Exibe a mensagem de erro detalhada
             Swal.fire('Erro!', error.message || 'Erro ao salvar pessoa.', 'error');
         });
 }

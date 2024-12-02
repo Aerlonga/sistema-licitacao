@@ -15,7 +15,7 @@ class Pessoa extends Model
 
     protected $primaryKey = 'id_pessoa';
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['nome', 'sobrenome'];
 
     // Relacionamento: uma pessoa pode estar em várias licitações
     public function licitacoes()

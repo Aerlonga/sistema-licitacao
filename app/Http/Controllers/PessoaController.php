@@ -31,9 +31,9 @@ class PessoaController extends Controller
     public function getAll()
     {
         try {
-            // Busca apenas pessoas ativas
-            $pessoas = Pessoa::where('ativo', 1)->get();
-            return response()->json($pessoas); // Retorna os dados como JSON
+            // Atualize para buscar 'id_pessoa' em vez de 'id'
+            $pessoas = Pessoa::where('ativo', 1)->get(['id_pessoa', 'nome', 'sobrenome']);
+            return response()->json($pessoas);
         } catch (\Exception $e) {
             Log::error('Erro ao buscar pessoas:', ['message' => $e->getMessage()]);
             return response()->json(['error' => 'Erro ao buscar pessoas.'], 500);
@@ -41,14 +41,45 @@ class PessoaController extends Controller
     }
 
 
+
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:255', // Validações
+            'nome' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-zÀ-ÿ\s]+$/', // Permite apenas letras (incluindo acentos) e espaços
+                'not_regex:/^\d+$/' // Bloqueia entradas que contenham apenas números
+            ],
+            'sobrenome' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-zÀ-ÿ\s]+$/',
+                'not_regex:/^\d+$/'
+            ],
         ]);
 
         try {
-            $pessoa = Pessoa::create(['nome' => $request->nome]); // Criação
+            // Capitaliza a primeira letra do nome e sobrenome
+            $nome = ucfirst(strtolower($request->nome));
+            $sobrenome = ucfirst(strtolower($request->sobrenome));
+
+            // Verifica se já existe uma pessoa com o mesmo nome e sobrenome
+            $existe = Pessoa::where('nome', $nome)
+                ->where('sobrenome', $sobrenome)
+                ->exists();
+
+            if ($existe) {
+                return response()->json(['error' => 'Essa pessoa já está cadastrada.'], 400);
+            }
+
+            // Cria a nova pessoa
+            $pessoa = Pessoa::create([
+                'nome' => $nome,
+                'sobrenome' => $sobrenome,
+            ]);
 
             return response()->json([
                 'success' => 'Pessoa adicionada com sucesso!',
@@ -64,12 +95,43 @@ class PessoaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'nome' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-zÀ-ÿ\s]+$/',
+                'not_regex:/^\d+$/'
+            ],
+            'sobrenome' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-zÀ-ÿ\s]+$/',
+                'not_regex:/^\d+$/'
+            ],
         ]);
 
         try {
+            // Capitaliza a primeira letra do nome e sobrenome
+            $nome = ucfirst(strtolower($request->nome));
+            $sobrenome = ucfirst(strtolower($request->sobrenome));
+
+            // Verifica se já existe uma pessoa com o mesmo nome e sobrenome (excluindo o ID atual)
+            $existe = Pessoa::where('nome', $nome)
+                ->where('sobrenome', $sobrenome)
+                ->where('id_pessoa', '!=', $id)
+                ->exists();
+
+            if ($existe) {
+                return response()->json(['error' => 'Essa pessoa já está cadastrada.'], 400);
+            }
+
+            // Atualiza o registro da pessoa
             $pessoa = Pessoa::findOrFail($id);
-            $pessoa->update(['nome' => $request->nome]); // Atualiza o registro
+            $pessoa->update([
+                'nome' => $nome,
+                'sobrenome' => $sobrenome,
+            ]);
 
             return response()->json([
                 'success' => 'Pessoa atualizada com sucesso!',
@@ -96,12 +158,12 @@ class PessoaController extends Controller
             if ($temVinculos) {
                 if (request()->expectsJson()) {
                     return response()->json([
-                        'error' => 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de excluí-la.'
+                        'error' => 'Essa pessoa está vinculada a uma ou mais contratações. Atualize antes de excluí-la.'
                     ], 400);
                 }
 
                 return redirect()->route('configuracoes')
-                    ->with('error', 'Essa pessoa está vinculada a uma ou mais licitações. Atualize as licitações antes de excluí-la.');
+                    ->with('error', 'Essa pessoa está vinculada a uma ou mais contratações. Atualize antes de excluí-la.');
             }
 
             // Marcar como inativa
