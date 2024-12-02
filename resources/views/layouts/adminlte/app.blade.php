@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="{{ asset('css/licitacoes.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('css/temaescuro.css') }}">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('styles')
 </head>
@@ -59,6 +61,7 @@
     <script src="{{ asset('vendor/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('vendor/sweetalert2/sweetalert2@11.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('js/temaescuro.js') }}"></script>
 </body>
 
 @section('scripts')
