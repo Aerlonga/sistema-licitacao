@@ -37,7 +37,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalPessoaLabel">Adicionar Pessoa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formPessoa">
@@ -54,7 +53,7 @@
                             class="fas fa-trash"></i> Excluir</button>
                     <div>
                         <button type="button" class="btn btn-primary" onclick="salvarPessoa()">Salvar</button>
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
