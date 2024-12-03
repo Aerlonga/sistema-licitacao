@@ -99,11 +99,14 @@ document.addEventListener('DOMContentLoaded', function () {
             'Estimativa de Custo',
             'Decreto Nº 9.900/2021',
             'Incisos',
+            'Analise de risco',
+            'Requisição de Despesas',
             'Certidões Negativas',
             'Instrução Normativa - CACTIC',
             'Parecer Técnico',
+            'Parecer Jurídico',
+            'Autorização do Ordenador de Despesas',
             'Documentação Orçamentária',
-            'Setor de Licitações',
         ]
     };
 
