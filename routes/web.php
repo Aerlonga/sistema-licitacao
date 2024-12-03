@@ -52,7 +52,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pessoas', [PessoaController::class, 'store'])->name('pessoas.store'); // Criar pessoa
         Route::put('/pessoas/{id}', [PessoaController::class, 'update'])->name('pessoas.update'); // Atualizar pessoa
         Route::delete('/pessoas/{id}', [PessoaController::class, 'destroy'])->name('pessoas.destroy'); // Excluir pessoa
-    });    
+        Route::get('/users', [UserController::class, 'getAllUsers'])->name('users.index'); // Listar usuários
+        Route::put('/users/{id}/alterar-role', [UserController::class, 'alterarRole'])->name('users.alterarRole'); // Alterar papel
+    });
 
     Route::post('/gerar-equipe', [LicitacaoController::class, 'gerarEquipe'])->name('LicitacoesSalvar');
     Route::get('/listarLicitacoes', [LicitacaoController::class, 'listarLicitacoes'])->name('listarLicitacoes');
