@@ -117,46 +117,6 @@ function abrirModalEditar(id, nome, sobrenome) {
 }
 
 
-// function salvarPessoa() {
-//     const id = document.getElementById('pessoaId').value; // ID da pessoa no campo oculto
-//     const nome = document.getElementById('pessoaNome').value.trim(); // Nome no formulário
-//     const sobrenome = document.getElementById('pessoaSobrenome').value.trim(); // Sobrenome no formulário
-
-//     if (!nome || !sobrenome) {
-//         Swal.fire('Erro!', 'Os campos nome e sobrenome são obrigatórios.', 'error');
-//         return;
-//     }
-
-//     // Decida se será criação ou edição com base no ID
-//     const url = id ? `/pessoas/${id}` : '/pessoas';
-//     const method = id ? 'PUT' : 'POST';
-
-//     fetch(url, {
-//         method: method,
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-//         },
-//         body: JSON.stringify({ nome, sobrenome }),
-//     })
-//         .then((response) => {
-//             if (!response.ok) {
-//                 return response.json().then((data) => {
-//                     throw new Error(data.error || 'Erro ao salvar os dados.');
-//                 });
-//             }
-//             return response.json();
-//         })
-//         .then((data) => {
-//             $('#modalPessoa').modal('hide'); // Fecha o modal
-//             Swal.fire('Sucesso!', data.success || 'Pessoa salva com sucesso.', 'success');
-//             $('#pessoasTable').DataTable().ajax.reload(); // Recarrega a tabela
-//         })
-//         .catch((error) => {
-//             console.error('Erro ao salvar pessoa:', error);
-//             Swal.fire('Erro!', error.message || 'Erro ao salvar pessoa.', 'error');
-//         });
-// }
 
 function salvarPessoa() {
     const id = document.getElementById('pessoaId').value; // ID da pessoa no campo oculto
@@ -233,6 +193,7 @@ function excluirPessoaModal() {
                 .then((response) => {
                     if (!response.ok) {
                         return response.json().then((data) => {
+                            console.error('Erro na resposta:', data); // Log do erro no servidor
                             throw new Error(data.error || 'Erro desconhecido.');
                         });
                     }
@@ -244,6 +205,7 @@ function excluirPessoaModal() {
                     $('#modalPessoa').modal('hide'); // Fecha o modal
                 })
                 .catch((error) => {
+                    console.error('Erro ao excluir pessoa:', error); // Log no console do cliente
                     Swal.fire('Erro!', error.message || 'Não foi possível excluir a pessoa.', 'error');
                 });
         }

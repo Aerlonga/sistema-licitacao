@@ -16,18 +16,6 @@ class PessoaController extends Controller
         return view('configuracoes', compact('pessoas'));
     }
 
-    // Listar pessoas no formato JSON (API)
-    // public function getAll()
-    // {
-    //     try {
-    //         $pessoas = Pessoa::all(); // Busca todas as pessoas
-    //         return response()->json($pessoas); // Retorna no formato JSON
-    //     } catch (\Exception $e) {
-    //         Log::error('Erro ao buscar pessoas:', ['message' => $e->getMessage()]);
-    //         return response()->json(['error' => 'Erro ao buscar pessoas.'], 500);
-    //     }
-    // }
-
     public function getAll()
     {
         try {
@@ -144,29 +132,77 @@ class PessoaController extends Controller
     }
 
 
+    // public function destroy($id)
+    // {
+    //     try {
+    //         $pessoa = Pessoa::findOrFail($id);
+
+    //         // Verificar se a pessoa está vinculada a uma licitação
+    //         $temVinculos = Licitacao::where('id_gestor', $id)
+    //             ->orWhere('id_integrante', $id)
+    //             ->orWhere('id_fiscal', $id)
+    //             ->exists();
+
+    //         if ($temVinculos) {
+    //             if (request()->expectsJson()) {
+    //                 return response()->json([
+    //                     'error' => 'Essa pessoa está vinculada a uma ou mais contratações. Atualize antes de excluí-la.'
+    //                 ], 400);
+    //             }
+
+    //             return redirect()->route('configuracoes')
+    //                 ->with('error', 'Essa pessoa está vinculada a uma ou mais contratações. Atualize antes de excluí-la.');
+    //         }
+
+    //         // Marcar como inativa
+    //         $pessoa->ativo = 0;
+    //         $pessoa->save();
+
+    //         if (request()->expectsJson()) {
+    //             return response()->json(['success' => 'Pessoa excluída com sucesso!']);
+    //         }
+
+    //         return redirect()->route('configuracoes')
+    //             ->with('success', 'Pessoa excluída com sucesso!');
+    //     } catch (\Exception $e) {
+    //         Log::error('Erro ao inativar pessoa:', ['message' => $e->getMessage()]);
+
+    //         if (request()->expectsJson()) {
+    //             return response()->json(['error' => 'Erro ao inativar a pessoa.'], 500);
+    //         }
+
+    //         return redirect()->route('configuracoes')
+    //             ->with('error', 'Erro ao inativar a pessoa.');
+    //     }
+    // }
+
     public function destroy($id)
     {
         try {
+            // Encontra a pessoa pelo ID
             $pessoa = Pessoa::findOrFail($id);
 
-            // Verificar se a pessoa está vinculada a uma licitação
-            $temVinculos = Licitacao::where('id_gestor', $id)
-                ->orWhere('id_integrante', $id)
-                ->orWhere('id_fiscal', $id)
+            // Verificar se a pessoa está vinculada a uma licitação com status ativo
+            $temVinculos = Licitacao::where('status', 1) // Substituindo 'ativo' por 'status'
+                ->where(function ($query) use ($id) {
+                    $query->where('id_gestor', $id)
+                        ->orWhere('id_integrante', $id)
+                        ->orWhere('id_fiscal', $id);
+                })
                 ->exists();
 
             if ($temVinculos) {
                 if (request()->expectsJson()) {
                     return response()->json([
-                        'error' => 'Essa pessoa está vinculada a uma ou mais contratações. Atualize antes de excluí-la.'
+                        'error' => 'Essa pessoa está vinculada a uma ou mais contratações ativas. Atualize antes de excluí-la.'
                     ], 400);
                 }
 
                 return redirect()->route('configuracoes')
-                    ->with('error', 'Essa pessoa está vinculada a uma ou mais contratações. Atualize antes de excluí-la.');
+                    ->with('error', 'Essa pessoa está vinculada a uma ou mais contratações ativas. Atualize antes de excluí-la.');
             }
 
-            // Marcar como inativa
+            // Marcar a pessoa como inativa
             $pessoa->ativo = 0;
             $pessoa->save();
 
@@ -177,7 +213,7 @@ class PessoaController extends Controller
             return redirect()->route('configuracoes')
                 ->with('success', 'Pessoa excluída com sucesso!');
         } catch (\Exception $e) {
-            Log::error('Erro ao inativar pessoa:', ['message' => $e->getMessage()]);
+            Log::error("Erro ao inativar pessoa com ID: $id", ['message' => $e->getMessage()]);
 
             if (request()->expectsJson()) {
                 return response()->json(['error' => 'Erro ao inativar a pessoa.'], 500);
