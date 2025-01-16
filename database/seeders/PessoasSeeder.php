@@ -11,9 +11,9 @@ class PessoasSeeder extends Seeder
     public function run()
     {
         $pessoas = [
-            ['nome' => 'Joao', 'created_at' => new DateTime(), 'updated_at' => new DateTime()],
-            ['nome' => 'Maria', 'created_at' => new DateTime(), 'updated_at' => new DateTime()],
-            ['nome' => 'Pedro', 'created_at' => new DateTime(), 'updated_at' => new DateTime()]
+            ['nome' => 'Joao', 'sobrenome' => 'Silva', 'created_at' => new DateTime(), 'updated_at' => new DateTime()],
+            ['nome' => 'Maria', 'sobrenome' => 'Santos', 'created_at' => new DateTime(), 'updated_at' => new DateTime()],
+            ['nome' => 'Pedro', 'sobrenome' => 'Oliveira', 'created_at' => new DateTime(), 'updated_at' => new DateTime()]
         ];
         foreach ($pessoas as $pessoa) {
             Pessoa::create($pessoa);
